@@ -15,3 +15,6 @@ The Ebay Listing Format Tool was developed to simplify and enhance the process w
 The Ebay Listing Format Tool was developed to simplify and enhance the process of creating eBay listings, ensuring consistency across all entries. I often found the eBay platform to have high latency when manually typing the listing title and description. This tool utilizes automation within the creation of the title and description for an eBay listing, significantly reducing time and effort while maintaining consistency across all listings.
 
 In the future, I intend to expand and enhance this suite of tools, with a particular focus on incorporating APIs. This will enable improved functionality and introduction features that are not currently possible, further streamlining and optimizing the user experience. For any suggestions or questions feel free to dm me through one of my socials.
+
+
+If you wanted to check out my ebay store here is the relevent link: https://www.ebay.com.au/usr/jerrome
