@@ -1,54 +1,83 @@
 class TCGTOOL:
     def __init__(self):
         print("Welcome To Jerome's TCGTOOL")
-        self.item = input("Enter Item Name: ")
-        self.price = float(input("Enter Item Price: "))
-        self.coupon = input("Did You Have A Coupon (y/n): ").lower()
-        self.discount = 0
+        self.items = []
 
-        if self.coupon == 'y':
-            self.discount = float(input("Enter Discount Percentage: "))
+    def add_item(self):
+        item_name = input("Enter Item Name: ")
+        item_price = float(input("Enter Item Price: "))
+        coupon = input("Did You Have A Coupon (y/n): ").lower()
+        discount = 0
 
-        self.discount_amount = self.price * (self.discount / 100)
+        if coupon == 'y':
+            discount = float(input("Enter Discount Percentage: "))
 
-    def calculate_final_price(self):
-        final_price = self.price - self.discount_amount + 2.98
+        discount_amount = item_price * (discount / 100)
+        final_price = item_price - discount_amount + 2.98
         tax_price = final_price * 1.1
-        return final_price, tax_price
+
+        sell = input("Are You Planning To Sell This Item (y/n): ").lower()
+        profit_marketplace = 0
+        profit_margin = 0
+
+        if sell == 'y':
+            marketplace = input("Which Marketplace (f/e): ").lower()
+            sell_price = float(input("Enter Sell Price: $"))
+            if marketplace == 'f':
+                profit_marketplace = sell_price - tax_price
+            elif marketplace == 'e':
+                profit_marketplace = (sell_price - tax_price) * 0.85
+            profit_margin = (profit_marketplace / tax_price) * 100
+        else:
+            sell_price = 0
+
+        item_summary = {
+            'item': item_name,
+            'price': item_price,
+            'discount': discount,
+            'discount_amount': discount_amount,
+            'final_price': final_price,
+            'tax_price': tax_price,
+            'sell_price': sell_price,
+            'profit_marketplace': profit_marketplace,
+            'profit_margin': profit_margin
+        }
+
+        self.items.append(item_summary)
+
+    def calculate_totals(self):
+        total_final_price = sum(item['final_price'] for item in self.items)
+        total_tax_price = sum(item['tax_price'] for item in self.items)
+        total_profit_marketplace = sum(item['profit_marketplace'] for item in self.items)
+        return total_final_price, total_tax_price, total_profit_marketplace
 
     def display_summary(self):
-        final_price, final_price_including_tax = self.calculate_final_price()
-        print(f"Item: {self.item}")
-        print(f"Original Price: ${self.price:.2f}")
-        print(f"Discount: {self.discount:.2f}%")
-        print("Price Breakdown:")
-        print(f"Item Price: ${self.price:.2f}")
-        print("Buyee Purchase Fee: $2.98")
-        print(f"Discount Amount: ${self.discount_amount:.2f}")
-        print(f"Discount Price: ${self.price:.2f} * {self.discount:.2f}% = ${self.price - self.discount_amount:.2f}")
-        print(f"Final Price Before Tax: ${final_price:.2f}")
-        print(f"Final Price Including Tax: (${self.price - self.discount_amount:.2f} + $2.98) * 1.1 = ${final_price_including_tax:.2f}")
+        for item in self.items:
+            print(f"\nItem: {item['item']}")
+            print(f"Original Price: ${item['price']:.2f}")
+            print(f"Discount: {item['discount']:.2f}%")
+            print("Price Breakdown:")
+            print(f"Item Price: ${item['price']:.2f}")
+            print("Buyee Purchase Fee: $2.98")
+            print(f"Discount Amount: ${item['discount_amount']:.2f}")
+            print(f"Discount Price: ${item['price']:.2f} * {item['discount']:.2f}% = ${item['price'] - item['discount_amount']:.2f}")
+            print(f"Final Price Before Tax: ${item['final_price']:.2f}")
+            print(f"Final Price Including Tax: (${item['price'] - item['discount_amount']:.2f} + $2.98) * 1.1 = ${item['tax_price']:.2f}")
+            if item['sell_price'] > 0:
+                print(f"Sell Price: ${item['sell_price']:.2f}")
+                print(f"Profit on Sale: ${item['profit_marketplace']:.2f}")
+                print(f"Profit Margin: {item['profit_margin']:.2f}%")
 
-        self.sell = input("Are You Planning To Sell (y/n): ").lower()
+        total_final_price, total_tax_price, total_profit_marketplace = self.calculate_totals()
+        total_tax_price_with_shipping = total_tax_price + 40  # Adding $40 for shipping
+        total_profit_after_shipping = total_profit_marketplace - 40  # Subtracting $40 for shipping from total profit
+        total_profit_margin = (total_profit_after_shipping / total_tax_price_with_shipping) * 100 if total_tax_price_with_shipping != 0 else 0
 
-        if self.sell == 'y':
-            self.marketplace = input("Which Marketplace (f/e): ").lower()
-
-            if self.marketplace == 'f':
-                self.marketplace_price = float(input("Enter Sell Price: $"))
-                self.profit_marketplace = self.marketplace_price - final_price_including_tax
-                profit_margin = (self.profit_marketplace / final_price_including_tax) * 100
-                print(f"Profit on Final Sale Price: ${self.profit_marketplace:.2f}")
-                print(f"Profit Margin: {profit_margin:.2f}%")
-
-            elif self.marketplace == 'e':
-                self.marketplace_price = float(input("Enter Sell Price: $"))
-                self.profit_marketplace = (self.marketplace_price - final_price_including_tax) * 0.85
-                profit_margin = (self.profit_marketplace / final_price_including_tax) * 100
-                print(f"Profit after 15% Fee on Final Sale Price: ${self.profit_marketplace:.2f}")
-                print(f"Profit Margin: {profit_margin:.2f}%")
-            else:
-                print("Invalid marketplace choice. Exiting.")
+        print(f"\nTotal Final Price Before Tax: ${total_final_price:.2f}")
+        print(f"Total Final Price Including Tax: ${total_tax_price:.2f}")
+        print(f"Total Final Price Including Tax and Shipping ($40): ${total_tax_price_with_shipping:.2f}")
+        print(f"Total Profit on All Sales After Shipping: ${total_profit_after_shipping:.2f}")
+        print(f"Total Profit Margin: {total_profit_margin:.2f}%\n")
 
 class Capital:
     @staticmethod
@@ -69,7 +98,6 @@ class Description:
         print(f"\n{pname} {pnum} From {pset} [{pcondition}]\n")
         print(f"\033[1m{pname.upper()} {pnum.upper()} FROM POKEMON {series_full_name.upper()} {pset.upper()} [{pcondition.upper()}]\033[0m\n")
 
-        # Call the condition method
         Description.condition(pcondition)
         Description.condition1(pcondition)
 
@@ -89,25 +117,21 @@ class Description:
 
     @staticmethod
     def condition(pcondition):
-        if pcondition in ['nm', 'NM']:
-            print("-NEAR MINT CONDITION")
-        elif pcondition in ['lp', 'LP']:
-            print("-LOW PLAYED CONDITION")
-        elif pcondition in ['mp', 'MP']:
-            print("-MODERATELY PLAYED CONDITION")
-        elif pcondition in ['hp', 'HP']:
-            print("-HEAVY PLAYED CONDITION")
-        elif pcondition in ['dmg', 'DMG']:
-            print("-DAMAGED CONDITION")
+        condition_map = {
+            'nm': 'NEAR MINT CONDITION',
+            'lp': 'LOW PLAYED CONDITION',
+            'mp': 'MODERATELY PLAYED CONDITION',
+            'hp': 'HEAVY PLAYED CONDITION',
+            'dmg': 'DAMAGED CONDITION'
+        }
+        print(f"-{condition_map.get(pcondition.lower(), 'UNKNOWN CONDITION')}")
 
     @staticmethod
     def condition1(pcondition):
-        if pcondition in ['nm', 'NM', 'lp', 'LP']:
+        if pcondition.lower() in ['nm', 'lp']:
             print("-PACK FRESH")
             print("-NEVER PLAYED")
-            print("-WILL BE SHIPPED WITH A PENNY SLEEVE, TOP LOADER AND TEAM BAG")
-        else:
-            print("-WILL BE SHIPPED WITH A PENNY SLEEVE, TOP LOADER AND TEAM BAG")
+        print("-WILL BE SHIPPED WITH A PENNY SLEEVE, TOP LOADER AND TEAM BAG")
 
 class Welcome:
     def print_help_guide(self):
@@ -119,9 +143,9 @@ class Welcome:
 
         Buyee Purchase Tool (2):
         A Tool Designed To Assist When Buying Items Off The Buyee Marketplaces
-        - Calculates Final Purchase Prices Including Multiple Fees
-        - Calculates Profit As Well As Profit Margins On Multiple Platforms
-        - As Of Now Shipping Incorporated And I Am Working On Adding Support For Multiple Items
+        - Calculates Final Purchase Prices Including Multiple Fees For Multiple Items
+        - Calculates Profit Item(s) As Well As Profit Margins On Multiple Platforms
+        - Shipping Is Calculated At $40 Per Order As An Estimated Constant From Past Orders
         - Note All Final Calculations Are An Estimation As Fees May Change
         - Fees Are Also Based In AUD Off Current Yen Conversion Rates
         
@@ -147,20 +171,25 @@ class Welcome:
             print("Press '5' To Exit")
 
             try:
-                x = int(input("Enter your choice: "))
+                choice = int(input("Enter your choice: "))
 
-                if x == 1:
+                if choice == 1:
                     user_input = input("Enter Text To Be Capitalized: ")
                     result = Capital.capitalize_all(user_input)
                     print(result)
-                elif x == 2:
-                    pokemon_cli = TCGTOOL()
-                    pokemon_cli.display_summary()
-                elif x == 3:
+                elif choice == 2:
+                    tcg_tool = TCGTOOL()
+                    while True:
+                        tcg_tool.add_item()
+                        another = input("Do you want to add another item? (y/n): ").lower()
+                        if another != 'y':
+                            break
+                    tcg_tool.display_summary()
+                elif choice == 3:
                     Description.title()
-                elif x == 4:
+                elif choice == 4:
                     self.print_help_guide()
-                elif x == 5:
+                elif choice == 5:
                     break
                 else:
                     print("Invalid choice. Please try again.")
