@@ -110,6 +110,8 @@ class Description:
             'ss': 'Sword And Shield',
             'SM': 'Sun And Moon',
             'sm': 'Sun And Moon',
+            'XY': 'X And Y',
+            'xy': 'X And Y',
             'BW': 'Black And White',
             'bw': 'Black And White'
         }
